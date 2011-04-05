@@ -1,5 +1,6 @@
 package net.contentcube.robot;
 
+import net.contentcube.robot.webcontrol.WebControllerService;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,7 +37,7 @@ public class ServiceActivity extends Activity {
 	protected void onStart() {
 		super.onStart();
 
-		mServiceIntent = new Intent(this, HttpControlService.class);
+		mServiceIntent = new Intent(this, WebControllerService.class);
 		startService(mServiceIntent);
 	}
 	

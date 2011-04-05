@@ -11,7 +11,6 @@ public class NXTCommandFactory {
 	
 	public static final byte TURN_SPEED = 50;
 	
-	
 	public static byte[][] build(NXTMovementCommand.Command command)
 	{
 		byte[][] buffers = new byte[2][14];

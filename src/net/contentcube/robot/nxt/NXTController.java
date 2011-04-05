@@ -94,7 +94,7 @@ public class NXTController
 		queue(command);
 	}
 	
-	private void queue(NXTMovementCommand command)
+	public void queue(NXTMovementCommand command)
 	{
 		mCommandQueue.add(command);
 		runQueue();

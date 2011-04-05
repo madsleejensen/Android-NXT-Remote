@@ -16,7 +16,7 @@
         
         <activity android:name=".ControlActivity"></activity>
         <activity android:name=".ServiceActivity"></activity>
-        <service android:name=".HttpControlService"></service>
+        <service android:name=".webcontrol.WebControllerService"></service>
         
 	</application>
 	

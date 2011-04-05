@@ -1,8 +1,15 @@
-package net.contentcube.robot;
+package net.contentcube.robot.webcontrol;
 
 import java.io.IOException;
+import java.io.InputStream;
 
+import net.contentcube.robot.helpers.StringHelper;
+import net.contentcube.robot.nxt.NXTController;
+import net.contentcube.robot.nxt.NXTMovementCommand;
+
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -11,11 +18,11 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 
-public class CommandsHttpRequester implements Runnable
+public class CommandsWebRequester implements Runnable
 {
 	public interface OnCommandReceivedListener
 	{
-		public void onCommandRecived();
+		public void onCommandRecived(NXTMovementCommand command);
 	}
 	
 	private DefaultHttpClient mHttpClient;
@@ -23,13 +30,19 @@ public class CommandsHttpRequester implements Runnable
 	private boolean mIsActive = false;
 	private Handler mHandler;
 	private long mLastPollTime = 0;
-	private int mMinimumTimeBetweenPolling = 1500; // miliseconds.
+	private int mMinimumTimeBetweenPolling = 500; // miliseconds.
+	private OnCommandReceivedListener mCommandReceivedListener;
 	
-	public CommandsHttpRequester(HttpGet request, Handler handler)
+	public CommandsWebRequester(HttpGet request, Handler handler)
 	{
 		mHttpRequest = request;
 		mHttpClient = new DefaultHttpClient();
 		mHandler = handler;
+	}
+	
+	public void setOnCommandReceivedListener(OnCommandReceivedListener listener)
+	{
+		mCommandReceivedListener = listener;
 	}
 	
 	public void stop()
@@ -86,10 +99,23 @@ public class CommandsHttpRequester implements Runnable
 		
 		try
 		{
-			response.getEntity().getContent().close();
+			HttpEntity entity = response.getEntity();
+			InputStream inputStream = entity.getContent();
+			
 			int statusCode = response.getStatusLine().getStatusCode();
-
-			Log.e("response", response.getStatusLine().toString());
+			
+			if (statusCode == HttpStatus.SC_OK)
+			{
+				String responseJSON = StringHelper.createByInputStream(inputStream);
+				NXTMovementCommand command = NXTMovementCommand.parseByJSONString(responseJSON);
+				
+				if (command != null && mCommandReceivedListener != null)
+				{
+					mCommandReceivedListener.onCommandRecived(command);
+				}
+			}
+			
+			inputStream.close();
 		}
 		catch (IllegalStateException e)
 		{

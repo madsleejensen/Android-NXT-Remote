@@ -5,6 +5,9 @@ import java.io.OutputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class NXTMovementCommand implements NXTCommand
 {
 	public enum Command
@@ -98,5 +101,45 @@ public class NXTMovementCommand implements NXTCommand
 			
 		}, mDuration);
 	
+	}
+	
+	public static NXTMovementCommand parseByJSONString(String jsonString)
+	{
+		NXTMovementCommand command = null;
+		String commandName;
+		
+		try
+		{
+			JSONObject data = new JSONObject(jsonString);
+			
+			commandName = data.getString("command");
+			
+			if (commandName.equals("forward"))
+			{
+				command = new NXTMovementCommand(NXTMovementCommand.Command.FORWARD);
+				command.setDuration(1000);
+			}
+			else if (commandName.equals("back"))
+			{
+				command = new NXTMovementCommand(NXTMovementCommand.Command.BACKWARD);
+				command.setDuration(1000);
+			}
+			else if (commandName.equals("left"))
+			{
+				command = new NXTMovementCommand(NXTMovementCommand.Command.TURN_LEFT);
+				command.setDuration(1000);
+			}
+			else if (commandName.equals("right"))
+			{
+				command = new NXTMovementCommand(NXTMovementCommand.Command.TURN_RIGHT);
+				command.setDuration(1000);
+			}
+		}
+		catch (JSONException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return command;
 	}
 }
