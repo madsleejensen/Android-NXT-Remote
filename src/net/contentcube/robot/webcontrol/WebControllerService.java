@@ -11,6 +11,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 
 public class WebControllerService extends Service {
 	
@@ -44,5 +45,16 @@ public class WebControllerService extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 		return null;
+	}
+	
+	@Override
+	public void onDestroy() {
+	
+		super.onDestroy();
+	
+		mCommandsRequester.stop();
+		mWorker.stop();
+		
+		Log.e("STOP", "STOP");
 	}
 }
