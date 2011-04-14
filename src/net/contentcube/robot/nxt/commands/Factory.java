@@ -1,6 +1,8 @@
-package net.contentcube.robot.nxt;
+package net.contentcube.robot.nxt.commands;
 
-public class NXTCommandFactory {
+import net.contentcube.robot.nxt.NXTCommand;
+
+public class Factory {
 	
 	public static final byte MOTOR_A = 0;
 	public static final byte MOTOR_B = 1;
@@ -9,9 +11,9 @@ public class NXTCommandFactory {
 	public static final byte FORWARD_SPEED = 100;
 	public static final byte BACKWARD_SPEED = -100;
 	
-	public static final byte TURN_SPEED = 50;
+	public static final byte TURN_SPEED = 75;
 	
-	public static byte[][] build(NXTMovementCommand.Command command)
+	public static byte[][] build(NXTCommand.Command command)
 	{
 		byte[][] buffers = new byte[2][14];
 		
@@ -50,10 +52,16 @@ public class NXTCommandFactory {
 				break;
 			
 			case BRAKE:
-			default:
-
+				
 				buffers[0] = brake(MOTOR_A);
 				buffers[1] = brake(MOTOR_B);
+				
+				break;	
+			
+			case PING:
+			default:
+				
+				buffers[0] = ping();
 								
 				break;
 		}
@@ -121,6 +129,12 @@ public class NXTCommandFactory {
 		buffer[12] = 0;
 		buffer[13] = 0;
 		
+		return buffer;
+	}
+	
+	private static byte[] ping()
+	{
+		byte[] buffer = new byte[1];
 		return buffer;
 	}
 }

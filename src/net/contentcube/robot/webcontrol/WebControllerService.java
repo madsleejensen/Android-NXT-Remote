@@ -2,7 +2,7 @@ package net.contentcube.robot.webcontrol;
 
 import net.contentcube.robot.NXTApplication;
 import net.contentcube.robot.nxt.NXTController;
-import net.contentcube.robot.nxt.NXTMovementCommand;
+import net.contentcube.robot.nxt.commands.MovementCommand;
 import net.contentcube.robot.webcontrol.CommandsWebRequester.OnCommandReceivedListener;
 
 import org.apache.http.client.methods.HttpGet;
@@ -30,7 +30,7 @@ public class WebControllerService extends Service {
 		mCommandsRequester.setOnCommandReceivedListener(new OnCommandReceivedListener() {
 			
 			@Override
-			public void onCommandRecived(NXTMovementCommand command) {
+			public void onCommandRecived(MovementCommand command) {
 				
 				mNXTController.queue(command);
 				

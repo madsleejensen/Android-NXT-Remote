@@ -5,7 +5,7 @@ import java.io.InputStream;
 
 import net.contentcube.robot.helpers.StringHelper;
 import net.contentcube.robot.nxt.NXTController;
-import net.contentcube.robot.nxt.NXTMovementCommand;
+import net.contentcube.robot.nxt.commands.MovementCommand;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -22,7 +22,7 @@ public class CommandsWebRequester implements Runnable
 {
 	public interface OnCommandReceivedListener
 	{
-		public void onCommandRecived(NXTMovementCommand command);
+		public void onCommandRecived(MovementCommand command);
 	}
 	
 	private DefaultHttpClient mHttpClient;
@@ -107,7 +107,7 @@ public class CommandsWebRequester implements Runnable
 			if (statusCode == HttpStatus.SC_OK)
 			{
 				String responseJSON = StringHelper.createByInputStream(inputStream);
-				NXTMovementCommand command = NXTMovementCommand.parseByJSONString(responseJSON);
+				MovementCommand command = MovementCommand.parseByJSONString(responseJSON);
 				
 				if (command != null && mCommandReceivedListener != null)
 				{

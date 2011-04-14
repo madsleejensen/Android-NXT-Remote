@@ -35,7 +35,7 @@ public class MainActivity extends ListActivity
 		@Override
 		public void onReceive(Context context, Intent intent)
 		{	
-			Log.e("connection", intent.getAction());
+			Log.e("connesction", intent.getAction());
 			
 			if (intent.getAction().equals(BluetoothDevice.ACTION_ACL_CONNECTED))
 			{

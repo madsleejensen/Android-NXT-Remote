@@ -28,9 +28,7 @@ public class ControlActivity extends Activity
 		
 		@Override
 		public void onReceive(Context context, Intent intent)
-		{
-			Log.e("connection", intent.getAction());
-			
+		{	
 			if (intent.getAction().equals(BluetoothDevice.ACTION_ACL_DISCONNECTED))
 			{
 				AlertDialog.Builder dialog = new AlertDialog.Builder(ControlActivity.this);

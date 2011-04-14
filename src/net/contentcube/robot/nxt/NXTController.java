@@ -3,24 +3,40 @@ package net.contentcube.robot.nxt;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import net.contentcube.robot.nxt.commands.MovementCommand;
+import net.contentcube.robot.nxt.commands.PingCommand;
 import android.bluetooth.BluetoothSocket;
-import android.util.Log;
 
 public class NXTController
 {
+	public static final int TIME_BETWEEN_PING = 7500; // miliseconds.
 	private static NXTController mInstance;
 	
-	private BluetoothSocket mSocket;
+	// used to ensure the NXT device wont turn off.
+	private Timer mKeepAliveTimer;
+	private TimerTask mPingTask = new TimerTask()
+	{
+		@Override
+		public void run()
+		{
+			if (mOutputStream == null) return;
+			
+			PingCommand ping = new PingCommand();
+			ping.run(mOutputStream);
+		}
+	};
+	
 	private OutputStream mOutputStream;
-	private LinkedList<NXTMovementCommand> mCommandQueue;
+	private LinkedList<NXTCommand> mCommandQueue;
 	private boolean mRunning = false;
-	private NXTMovementCommand.OnCompleteListener mCompleteListener = new NXTMovementCommand.OnCompleteListener() {
+	private MovementCommand.OnCompleteListener mCompleteListener = new MovementCommand.OnCompleteListener() {
 
 		@Override
 		public void onComplete()
 		{
-			Log.e("NXTCommand", "Complete");
 			mRunning = false;
 			runQueue();
 		}
@@ -39,13 +55,13 @@ public class NXTController
 	
 	public NXTController()
 	{
-		mCommandQueue = new LinkedList<NXTMovementCommand>();
+		mCommandQueue = new LinkedList<NXTCommand>();
+		mKeepAliveTimer = new Timer();
+		mKeepAliveTimer.scheduleAtFixedRate(mPingTask, TIME_BETWEEN_PING, TIME_BETWEEN_PING);
 	}
 	
 	public void setBluetoothSocket(BluetoothSocket socket)
 	{
-		mSocket = socket;
-		
 		try
 		{
 			mOutputStream = socket.getOutputStream();
@@ -58,7 +74,7 @@ public class NXTController
 	
 	public void forward(int duration)
 	{
-		NXTMovementCommand command = new NXTMovementCommand(NXTMovementCommand.Command.FORWARD);
+		MovementCommand command = new MovementCommand(NXTCommand.Command.FORWARD);
 		command.setDuration(duration);
 		
 		queue(command);
@@ -66,7 +82,7 @@ public class NXTController
 	
 	public void turnRight(int duration)
 	{
-		NXTMovementCommand command = new NXTMovementCommand(NXTMovementCommand.Command.TURN_RIGHT);
+		MovementCommand command = new MovementCommand(NXTCommand.Command.TURN_RIGHT);
 		command.setDuration(duration);
 		
 		queue(command);
@@ -74,7 +90,7 @@ public class NXTController
 	
 	public void turnLeft(int duration)
 	{
-		NXTMovementCommand command = new NXTMovementCommand(NXTMovementCommand.Command.TURN_LEFT);
+		MovementCommand command = new MovementCommand(NXTCommand.Command.TURN_LEFT);
 		command.setDuration(duration);
 		
 		queue(command);
@@ -82,7 +98,7 @@ public class NXTController
 	
 	public void backward(int duration)
 	{
-		NXTMovementCommand command = new NXTMovementCommand(NXTMovementCommand.Command.BACKWARD);
+		MovementCommand command = new MovementCommand(NXTCommand.Command.BACKWARD);
 		command.setDuration(duration);
 		
 		queue(command);
@@ -90,11 +106,11 @@ public class NXTController
 	
 	public void brake()
 	{
-		NXTMovementCommand command = new NXTMovementCommand(NXTMovementCommand.Command.BRAKE);
+		MovementCommand command = new MovementCommand(NXTCommand.Command.BRAKE);
 		queue(command);
 	}
 	
-	public void queue(NXTMovementCommand command)
+	public void queue(NXTCommand command)
 	{
 		mCommandQueue.add(command);
 		runQueue();
@@ -105,7 +121,7 @@ public class NXTController
 		if (mRunning) return;
 		mRunning = true;
 		
-		NXTMovementCommand command = mCommandQueue.poll();
+		NXTCommand command = mCommandQueue.poll();
 		
 		if (command != null)
 		{

@@ -4,20 +4,22 @@
       android:versionCode="1"
       android:versionName="1.0">
 
-
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:name=".NXTApplication">
         <activity android:name=".MainActivity"
-                  android:label="@string/app_name">
+                  android:label="@string/app_name"
+                  android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         
-        <activity android:name=".ControlActivity"></activity>
-        <activity android:name=".ServiceActivity"></activity>
-        <service android:name=".webcontrol.WebControllerService"></service>
-        
+        <activity android:name=".ControlActivity"
+        		  android:screenOrientation="portrait" />
+        <activity android:name=".ServiceActivity"
+        		  android:screenOrientation="portrait" />
+        		  
+        <service android:name=".webcontrol.WebControllerService" />
 	</application>
 	
 	<uses-permission android:name="android.permission.BLUETOOTH" />

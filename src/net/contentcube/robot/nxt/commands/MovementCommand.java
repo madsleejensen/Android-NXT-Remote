@@ -1,36 +1,24 @@
-package net.contentcube.robot.nxt;
+package net.contentcube.robot.nxt.commands;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import net.contentcube.robot.nxt.NXTCommand;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class NXTMovementCommand implements NXTCommand
+public class MovementCommand implements NXTCommand
 {
-	public enum Command
-	{
-		FORWARD,
-		BACKWARD,
-		BRAKE,
-		TURN_RIGHT,
-		TURN_LEFT
-	}
-	
-	public interface OnCompleteListener
-	{
-		public void onComplete();
-	}
-	
-	private Timer mTimer;
+	private Timer mBrakeTimer;
 	private OutputStream mStream;
 	private OnCompleteListener mCompleteListener;
-	private NXTMovementCommand.Command mCommand;
+	private MovementCommand.Command mCommand;
 	private int mDuration = -1; // -1 == infinity.
 	
-	public NXTMovementCommand(NXTMovementCommand.Command command)
+	public MovementCommand(NXTCommand.Command command)
 	{
 		mCommand = command;
 	}
@@ -49,13 +37,13 @@ public class NXTMovementCommand implements NXTCommand
 	public void run(OutputStream stream)
 	{
 		mStream = stream;
-		byte[][] buffers = NXTCommandFactory.build(mCommand);
+		byte[][] buffers = Factory.build(mCommand);
 		
 		writeBuffers(buffers);
 		
 		if (mDuration != -1)
 		{
-			startTimer();
+			scheduleBrakeAction();
 		}
 		else
 		{
@@ -83,15 +71,15 @@ public class NXTMovementCommand implements NXTCommand
 		}
 	}
 	
-	private void startTimer()
+	private void scheduleBrakeAction()
 	{
-		mTimer = new Timer("completion");
-		mTimer.schedule(new TimerTask() {
+		mBrakeTimer = new Timer("completion");
+		mBrakeTimer.schedule(new TimerTask() {
 			
 			@Override
 			public void run() {
 				
-				writeBuffers(NXTCommandFactory.build(NXTMovementCommand.Command.BRAKE));
+				writeBuffers(Factory.build(NXTCommand.Command.BRAKE));
 				
 				if (mCompleteListener != null)
 				{
@@ -100,12 +88,11 @@ public class NXTMovementCommand implements NXTCommand
 			}
 			
 		}, mDuration);
-	
 	}
 	
-	public static NXTMovementCommand parseByJSONString(String jsonString)
+	public static MovementCommand parseByJSONString(String jsonString)
 	{
-		NXTMovementCommand command = null;
+		MovementCommand command = null;
 		String commandName;
 		
 		try
@@ -116,22 +103,22 @@ public class NXTMovementCommand implements NXTCommand
 			
 			if (commandName.equals("forward"))
 			{
-				command = new NXTMovementCommand(NXTMovementCommand.Command.FORWARD);
+				command = new MovementCommand(NXTCommand.Command.FORWARD);
 				command.setDuration(1000);
 			}
 			else if (commandName.equals("back"))
 			{
-				command = new NXTMovementCommand(NXTMovementCommand.Command.BACKWARD);
+				command = new MovementCommand(NXTCommand.Command.BACKWARD);
 				command.setDuration(1000);
 			}
 			else if (commandName.equals("left"))
 			{
-				command = new NXTMovementCommand(NXTMovementCommand.Command.TURN_LEFT);
+				command = new MovementCommand(NXTCommand.Command.TURN_LEFT);
 				command.setDuration(1000);
 			}
 			else if (commandName.equals("right"))
 			{
-				command = new NXTMovementCommand(NXTMovementCommand.Command.TURN_RIGHT);
+				command = new MovementCommand(NXTCommand.Command.TURN_RIGHT);
 				command.setDuration(1000);
 			}
 		}
