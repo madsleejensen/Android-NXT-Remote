@@ -134,7 +134,7 @@ public class Factory {
 	
 	private static byte[] ping()
 	{
-		byte[] buffer = new byte[1];
+		byte[] buffer = new byte[3];
 		return buffer;
 	}
 }

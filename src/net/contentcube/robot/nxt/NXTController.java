@@ -9,6 +9,7 @@ import java.util.TimerTask;
 import net.contentcube.robot.nxt.commands.MovementCommand;
 import net.contentcube.robot.nxt.commands.PingCommand;
 import android.bluetooth.BluetoothSocket;
+import android.util.Log;
 
 public class NXTController
 {
@@ -25,7 +26,7 @@ public class NXTController
 			if (mOutputStream == null) return;
 			
 			PingCommand ping = new PingCommand();
-			ping.run(mOutputStream);
+			//ping.run(mOutputStream);
 		}
 	};
 	
@@ -127,6 +128,7 @@ public class NXTController
 		{
 			command.setOnCompleteListener(mCompleteListener);
 			command.run(mOutputStream);
+			Log.e("NXT", "command-sent");
 		}
 		else
 		{
