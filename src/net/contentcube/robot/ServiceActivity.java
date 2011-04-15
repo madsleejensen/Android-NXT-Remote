@@ -65,6 +65,14 @@ public class ServiceActivity extends Activity {
 	@Override
 	protected void onStop() {
 		super.onStop();
+		
+	}
+	
+	@Override
+	protected void onDestroy()
+	{
+		super.onDestroy();
+		
 		// this does not stop the service. 
 		if (mServiceIntent != null)
 		{
@@ -72,6 +80,6 @@ public class ServiceActivity extends Activity {
 		}
 		
 		unregisterReceiver(mConnectionReceiver);
+		
 	}
-	
 }

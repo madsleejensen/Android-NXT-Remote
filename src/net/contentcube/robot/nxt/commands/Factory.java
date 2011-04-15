@@ -11,7 +11,7 @@ public class Factory {
 	public static final byte FORWARD_SPEED = 100;
 	public static final byte BACKWARD_SPEED = -100;
 	
-	public static final byte TURN_SPEED = 75;
+	public static final byte TURN_SPEED = 40;
 	
 	public static byte[][] build(NXTCommand.Command command)
 	{
@@ -38,14 +38,14 @@ public class Factory {
 				buffers[0] = forward(MOTOR_A);
 				buffers[0][5] = TURN_SPEED;
 				buffers[1] = backward(MOTOR_B);
-				buffers[1][5] = -TURN_SPEED;
+				buffers[1][5] = -25;
 				
 				break;
 				
 			case TURN_LEFT:
 
 				buffers[0] = backward(MOTOR_A);
-				buffers[0][5] = -TURN_SPEED;
+				buffers[0][5] = -25;
 				buffers[1] = forward(MOTOR_B);
 				buffers[1][5] = TURN_SPEED;
 				
@@ -69,7 +69,7 @@ public class Factory {
 		return buffers;
 	}
 	
-	private static byte[] forward(byte motor)
+	private static byte[] backward(byte motor)
 	{
 		byte[] buffer = new byte[14];
 		buffer[0] = (byte) (14-2);  // length lsb
@@ -90,7 +90,7 @@ public class Factory {
 		return buffer;
 	}
 	
-	private static byte[] backward(byte motor)
+	private static byte[] forward(byte motor)
 	{
 		byte[] buffer = new byte[14];
 		buffer[0] = (byte) (14-2);  // length lsb

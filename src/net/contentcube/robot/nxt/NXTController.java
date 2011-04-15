@@ -30,6 +30,7 @@ public class NXTController
 		}
 	};
 	
+	private BluetoothSocket mBluetoothSocket;
 	private OutputStream mOutputStream;
 	private LinkedList<NXTCommand> mCommandQueue;
 	private boolean mRunning = false;
@@ -61,10 +62,29 @@ public class NXTController
 		mKeepAliveTimer.scheduleAtFixedRate(mPingTask, TIME_BETWEEN_PING, TIME_BETWEEN_PING);
 	}
 	
-	public void setBluetoothSocket(BluetoothSocket socket)
+	public void disconnectDevice()
 	{
+		if (mBluetoothSocket != null)
+		{
+			try
+			{
+				mBluetoothSocket.close();
+				mBluetoothSocket = null;
+				
+				Log.e("NXT", "Disconnect");
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void setBluetoothSocket(BluetoothSocket socket)
+	{	
 		try
 		{
+			mBluetoothSocket = socket;
 			mOutputStream = socket.getOutputStream();
 		}
 		catch (IOException e)

@@ -5,6 +5,13 @@
     android:layout_height="fill_parent"
     >
 	
+	<Button
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:text="Restart bluetooth"
+		android:id="@+id/button_restart_bluetooth"
+		/>
+	
 	<ListView 
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"

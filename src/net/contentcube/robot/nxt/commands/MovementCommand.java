@@ -10,8 +10,6 @@ import net.contentcube.robot.nxt.NXTCommand;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
-
 public class MovementCommand implements NXTCommand
 {
 	private Timer mBrakeTimer;
@@ -106,22 +104,22 @@ public class MovementCommand implements NXTCommand
 			if (commandName.equals("forward"))
 			{
 				command = new MovementCommand(NXTCommand.Command.FORWARD);
-				command.setDuration(1000);
+				command.setDuration(500);
 			}
 			else if (commandName.equals("back"))
 			{
 				command = new MovementCommand(NXTCommand.Command.BACKWARD);
-				command.setDuration(1000);
+				command.setDuration(500);
 			}
 			else if (commandName.equals("left"))
 			{
 				command = new MovementCommand(NXTCommand.Command.TURN_LEFT);
-				command.setDuration(1000);
+				command.setDuration(500);
 			}
 			else if (commandName.equals("right"))
 			{
 				command = new MovementCommand(NXTCommand.Command.TURN_RIGHT);
-				command.setDuration(1000);
+				command.setDuration(500);
 			}
 		}
 		catch (JSONException e)

@@ -19,6 +19,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -29,6 +31,7 @@ public class MainActivity extends ListActivity
 	private BluetoothAdapter mBluetoothAdapter;
 	private DeviceListAdapter mListAdapter;
 	private BluetoothSocket mSocket;
+	private Button mRestartBluetoothButton;
 	
 	private BroadcastReceiver mConnectionReceiver = new BroadcastReceiver()
 	{
@@ -56,6 +59,18 @@ public class MainActivity extends ListActivity
         setContentView(R.layout.main);
         
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        
+        mRestartBluetoothButton = (Button) findViewById(R.id.button_restart_bluetooth);
+        mRestartBluetoothButton.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				mBluetoothAdapter.disable();
+				enableBluetooth();
+			}
+		});
+        
         if (!mBluetoothAdapter.isEnabled())
         {
         	enableBluetooth();
@@ -64,6 +79,15 @@ public class MainActivity extends ListActivity
         {
         	buildDeviceList();
         }
+    }
+    
+    @Override
+    protected void onStart()
+    {
+    	super.onStart();
+
+        // disconnect existing connection.
+		NXTController.getInstance().disconnectDevice(); 
     }
     
     private void enableBluetooth()

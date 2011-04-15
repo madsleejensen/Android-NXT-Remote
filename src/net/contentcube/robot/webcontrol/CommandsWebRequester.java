@@ -107,6 +107,9 @@ public class CommandsWebRequester implements Runnable
 			if (statusCode == HttpStatus.SC_OK)
 			{
 				String responseJSON = StringHelper.createByInputStream(inputStream);
+				
+				Log.e("NXT", "WEB: " + responseJSON);
+				
 				MovementCommand command = MovementCommand.parseByJSONString(responseJSON);
 				
 				if (command != null && mCommandReceivedListener != null)
