@@ -132,9 +132,14 @@ public class Factory {
 		return buffer;
 	}
 	
-	private static byte[] ping()
+	public static byte[] ping()
 	{
-		byte[] buffer = new byte[3];
+		byte[] buffer = new byte[4];
+		buffer[0] = (byte) (4-2);
+		buffer[1] = 0;
+		buffer[2] = 0x00;
+		buffer[3] = 0x0D;
+		
 		return buffer;
 	}
 }

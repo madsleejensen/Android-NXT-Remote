@@ -26,7 +26,7 @@ public class NXTController
 			if (mOutputStream == null) return;
 			
 			PingCommand ping = new PingCommand();
-			//ping.run(mOutputStream);
+			ping.run(mOutputStream);
 		}
 	};
 	
